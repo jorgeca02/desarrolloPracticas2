@@ -4,6 +4,7 @@ import { Inter } from 'next/font/google'
 import styles from '@/styles/Home.module.css'
 import { useState } from 'react'
 import router from 'next/router'
+import axios from 'axios';
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -18,6 +19,7 @@ export default function Home() {
             var myHeaders = new Headers();
             console.log("login2")
             myHeaders.append("Content-Type", "application/json");
+            myHeaders.append("Access-Control-Allow-Origin","*")
             console.log("login3")
             var requestOptions = {
                 method: 'GET',
@@ -26,13 +28,7 @@ export default function Home() {
             console.log("login4")
             const url = `http://localhost:8080/login?user=${username}&pw=${password}`;
             console.log(url)
-            console.log("fetcheando")
-            try{
-              const response = await fetch(url, requestOptions)
-            }catch (e){
-              console.log(e)
-            }
-            
+            const response = await fetch(url, requestOptions) 
             console.log("fetch hecho")
             const data = await response.json();
             console.log(data);
@@ -45,6 +41,7 @@ export default function Home() {
                 setMensaje(data.msg);
             }
         } catch (e) {
+            console.log(e)
             setMensaje('Error al iniciar sesion');
         }
     }
@@ -53,7 +50,7 @@ export default function Home() {
             console.log("signin")
             var myHeaders = new Headers();
             myHeaders.append("Content-Type", "application/json");
-
+            myHeaders.append("Access-Control-Allow-Origin","*")
 
             var raw = JSON.stringify({
                 "username": username,
@@ -72,11 +69,11 @@ export default function Home() {
             console.log(data);
             if (response.ok) {
                 
-                const idObjeto = data.idObjeto;
+                const idObjeto = data._id;
 
                 router.push(`/main/${idObjeto}`);
             } else {
-                setMensaje(data.mensaje);
+                setMensaje(data.msg);
             }
         } catch (e) {
             setMensaje('Error al crear cuenta');

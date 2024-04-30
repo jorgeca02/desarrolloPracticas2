@@ -22,15 +22,19 @@ type PostViajeContext = RouterContext<
 export const addUser = async (ctx:PostUserContext) => {
     const response = await ctx.request.body({type:"json"})
     console.log(response)
+    ctx.response.headers.set("Content-Type", "application/json");
+    ctx.response.headers.set("Access-Control-Allow-Origin","*")
     const value = await response.value
 
     if(!value.username || !value.password){
-        ctx.response.body = {message: "faltan parametros, parametros necesarios: name,password"}
+        ctx.response.body = {msg: "faltan parametros, parametros necesarios: name,password"}
         ctx.response.status=400
+        console.log(ctx.response)
         return
     } else if(await UsersCollection.findOne({username:value.username})){
-        ctx.response.body = {message: "Ya existe un usuario con este nombre"}
+        ctx.response.body = {msg: "Ya existe un usuario con este nombre"}
         ctx.response.status=400  
+        console.log(ctx.response)
         return
     }else{
         const newuser: User = {
@@ -39,7 +43,8 @@ export const addUser = async (ctx:PostUserContext) => {
         };
         await UsersCollection.insertOne(newuser as UserSchema)
         ctx.response.body = newuser;
-        ctx.response.status = 200;                
+        ctx.response.status = 200;      
+        console.log(ctx.response)          
         return;
     }   
 }

@@ -18,14 +18,12 @@ app.use(router.routes());
 app.use(router.allowedMethods());
 app.use(oakCors());
 
-app.use(async (ctx: Context, next) => {
-    // Llamar a next() para continuar con el siguiente middleware
-    await next();
-  
-    // Configurar los encabezados de la respuesta
-    ctx.response.headers.set("Content-Type", "application/json; charset=utf-8");
-    ctx.response.headers.set("Server", "Kestrel");
-  });
-
+app.use(
+  oakCors({
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST"], // Add other HTTP methods if necessary
+    optionsSuccessStatus: 200, // Some legacy browsers (IE11, various SmartTVs) choke on 204
+  })
+);
 const port = Deno.env.get("PORT")
 if(port)await app.listen({ port:Number(port) });

@@ -22,6 +22,7 @@ type GetViajeContext = RouterContext<
 
 export const login = async (context: LoginContext) => {
   context.response.headers.set("Content-Type", "application/json");
+  context.response.headers.set("Access-Control-Allow-Origin","*")
   const params = helpers.getQuery(context, { mergeParams: true });
   if(!params?.user){
     context.response.status = 400;
