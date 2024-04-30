@@ -20,3 +20,4 @@ const db = await connectMongoDB();
 console.info(`MongoDB ${db.name} connected`);
 
 export const UsersCollection = db.collection<UserSchema>("Users")
+export const ViajesCollection = db.collection<ViajeSchema>("Viajes")

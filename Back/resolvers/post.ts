@@ -1,14 +1,19 @@
 import { RouterContext } from "https://deno.land/x/oak@v11.1.0/router.ts";
 import { Context } from "https://deno.land/x/oak@v11.1.0/context.ts";
 
-import { AuthorsCollection, BooksCollection, UsersCollection } from "../db/mongo.ts";
-import { AuthorSchema, BookSchema, UserSchema } from "../db/schemas.ts";
-import { Author, Book, User } from "../types.ts";
+import { ViajesCollection, UsersCollection } from "../db/mongo.ts";
+import { ViajeSchema, UserSchema } from "../db/schemas.ts";
+import { Viaje,ViajePersona,Transaccion, User } from "../types.ts";
 import { GridFSFindOptions } from "https://deno.land/x/mongo@v0.31.1/src/types/gridfs.ts";
 
 
 type PostUserContext = RouterContext<
   "/addUser",
+  Record<string | number, string | undefined>,
+  Record<string, any>
+>;
+type PostViajeContext = RouterContext<
+  "/addViaje",
   Record<string | number, string | undefined>,
   Record<string, any>
 >;
@@ -34,6 +39,25 @@ export const addUser = async (ctx:PostUserContext) => {
         };
         await UsersCollection.insertOne(newuser as UserSchema)
         ctx.response.body = newuser;
+        ctx.response.status = 200;                
+        return;
+    }   
+}
+export const addViaje = async (ctx:PostViajeContext) => {
+    const response = await ctx.request.body({type:"json"})
+    console.log(response)
+    const value = await response.value
+    if(!value.name||!value.personas||value.personas.length==0){
+        ctx.response.body = {message: "faltan parametros, parametros necesarios: name,personas"}
+        ctx.response.status=400
+        return
+    }else{
+        const newviaje: Viaje = {
+            name:value.name,
+            personas:value.personas,
+        };
+        await ViajesCollection.insertOne(newviaje as ViajeSchema)
+        ctx.response.body = newviaje;
         ctx.response.status = 200;                
         return;
     }   
