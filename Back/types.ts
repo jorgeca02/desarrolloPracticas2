@@ -12,12 +12,21 @@ export type Viaje = {
 }
 export type PersonaViaje = {
     username:string,
+    idP:string,
     saldo:number,
     gasto:number,
     presupuesto:number,
     transacciones:[Transaccion]
+    pagos:[Pago]
+    pendientes:[Pago]
+    calculo:number
 }
 export type Transaccion = {
+    nombre:string,
     cantidad:number,
     pagan:[{username:string,cantidad:numero}]
+}
+export type Pago = {
+    idP:string,
+    cantidad:number
 }
